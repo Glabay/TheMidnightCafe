@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | The Midnight Café</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- =========================
+         Sidebar
+         ========================= -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+
+        <nav class="nav">
+            <a th:href="@{/admin}" class="active">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- =========================
+         Main Content
+         ========================= -->
+    <main class="content">
+
+        <header class="page-header">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Welcome to The Midnight Café administration portal.</p>
+            </div>
+            <div class="page-actions">
+                <a th:href="@{/admin/load-test}" class="button button-outline">
+                    <span>⚡</span> Load Tests
+                </a>
+                <a th:href="@{/admin/products/new}" class="button button-primary">
+                    <span>+</span> New Product
+                </a>
+                <a th:href="@{/admin/customers/new}" class="button button-secondary">
+                    <span>+</span> New Customer
+                </a>
+                <a th:href="@{/admin/employees/new}" class="button button-secondary">
+                    <span>+</span> New Employee
+                </a>
+            </div>
+        </header>
+
+        <!-- =========================
+             Statistics
+             ========================= -->
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Products</span>
+                    <span class="stat-icon">🥐</span>
+                </div>
+                <span class="stat-value" th:text="${productCount}">0</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Customers</span>
+                    <span class="stat-icon">👥</span>
+                </div>
+                <span class="stat-value" th:text="${customerCount}">0</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Employees</span>
+                    <span class="stat-icon">💼</span>
+                </div>
+                <span class="stat-value" th:text="${employeeCount}">0</span>
+            </div>
+
+            <div class="stat-card" th:if="${userCount != null}">
+                <div class="stat-header">
+                    <span class="stat-label">Registered Users</span>
+                    <span class="stat-icon">🔐</span>
+                </div>
+                <span class="stat-value" th:text="${userCount}">0</span>
+            </div>
+        </section>
+
+        <!-- =========================
+             Recent Products
+             ========================= -->
+        <section class="section">
+            <div class="section-header">
+                <h2>Products</h2>
+                <a th:href="@{/admin/products}">View all products →</a>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Created</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product : ${products}">
+                        <td>
+                            <div class="item-name" th:text="${product.name}">Coffee</div>
+                            <div class="item-subtext" th:text="${product.description != null and #strings.length(product.description) > 50 ? #strings.substring(product.description, 0, 50) + '...' : product.description}">Description</div>
+                        </td>
+                        <td>
+                            <span class="badge badge-category" th:text="${product.category != null ? product.category.displayName : '—'}">Beverage</span>
+                        </td>
+                        <td>
+                            <span class="price">$<span th:text="${product.price != null ? #numbers.formatDecimal(product.price, 1, 2) : '0.00'}">0.00</span></span>
+                        </td>
+                        <td th:text="${product.createdAt != null ? #temporals.format(product.createdAt, 'MMM dd, yyyy') : '—'}">Jan 01, 2026</td>
+                        <td>
+                            <div class="table-actions">
+                                <a class="button button-secondary button-sm" th:href="@{/admin/products/{id}(id=${product.productId})}">View</a>
+                                <a class="button button-outline button-sm" th:href="@{/admin/products/{id}/edit(id=${product.productId})}">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${products == null or products.isEmpty()}">
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-icon">🥐</div>
+                            <h3>No Products Found</h3>
+                            <p>Get started by adding delicious beverages and baked goods.</p>
+                            <a th:href="@{/admin/products/new}" class="button button-primary button-sm">+ Add First Product</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- =========================
+             Recent Customers
+             ========================= -->
+        <section class="section">
+            <div class="section-header">
+                <h2>Customers</h2>
+                <a th:href="@{/admin/customers}">View all customers →</a>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Loyalty Points</th>
+                        <th>Marketing</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customer : ${customers}">
+                        <td>
+                            <div class="item-name">
+                                <span th:text="${customer.preferredName != null and !customer.preferredName.isEmpty() ? customer.preferredName : customer.firstName}">John</span>
+                                <span th:text="${' ' + customer.lastName}">Doe</span>
+                            </div>
+                            <div class="item-subtext" th:if="${customer.preferredName != null and !customer.preferredName.isEmpty()}" th:text="'Legal: ' + ${customer.firstName} + ' ' + ${customer.lastName}">Legal Name</div>
+                        </td>
+                        <td th:text="${customer.email != null ? customer.email : '—'}">john@example.com</td>
+                        <td th:text="${customer.phoneNumber != null ? customer.phoneNumber : '—'}">555-555-5555</td>
+                        <td>
+                            <span class="badge" style="background: rgba(241, 197, 106, 0.15); color: var(--aurora-yellow); border: 1px solid rgba(241, 197, 106, 0.3);" th:text="${customer.loyaltyPoints != null ? customer.loyaltyPoints + ' pts' : '0 pts'}">0 pts</span>
+                        </td>
+                        <td>
+                            <span th:if="${customer.marketingOptIn}" class="status status-opted-in">Opted In</span>
+                            <span th:unless="${customer.marketingOptIn}" class="status status-opted-out">Opted Out</span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <a class="button button-secondary button-sm" th:href="@{/admin/customers/{id}(id=${customer.id})}">View</a>
+                                <a class="button button-outline button-sm" th:href="@{/admin/customers/{id}/edit(id=${customer.id})}">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${customers == null or customers.isEmpty()}">
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-icon">👥</div>
+                            <h3>No Customers Registered</h3>
+                            <p>Customer accounts and profiles will be shown here.</p>
+                            <a th:href="@{/admin/customers/new}" class="button button-primary button-sm">+ Register Customer</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- =========================
+             Employees
+             ========================= -->
+        <section class="section">
+            <div class="section-header">
+                <h2>Employees</h2>
+                <a th:href="@{/admin/employees}">View all employees →</a>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Job Title</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Hire Date</th>
+                        <th>Hourly Rate</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="employee : ${employees}">
+                        <td>
+                            <div class="item-name" th:text="${employee.firstName + ' ' + employee.lastName}">Jane Doe</div>
+                            <div class="item-subtext" th:text="${employee.email}">jane@midnightcafe.dev</div>
+                        </td>
+                        <td th:text="${employee.jobTitle != null ? employee.jobTitle : 'Barista'}">Barista</td>
+                        <td>
+                            <span class="badge badge-role" th:text="${employee.role != null ? employee.role : 'ROLE_EMPLOYEE'}">ROLE_EMPLOYEE</span>
+                        </td>
+                        <td>
+                            <span class="status"
+                                  th:classappend="${employee.status != null and employee.status.name() == 'ACTIVE' ? 'status-active' : employee.status != null and employee.status.name() == 'SUSPENDED' ? 'status-suspended' : 'status-inactive'}"
+                                  th:text="${employee.status != null ? employee.status : 'ACTIVE'}">ACTIVE</span>
+                        </td>
+                        <td th:text="${employee.hireDate != null ? #temporals.format(employee.hireDate, 'MMM dd, yyyy') : '—'}">Jan 01, 2026</td>
+                        <td>
+                            $<span th:text="${employee.hourlyRate != null ? #numbers.formatDecimal(employee.hourlyRate, 1, 2) : '0.00'}">17.50</span>/hr
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <a class="button button-secondary button-sm" th:href="@{/admin/employees/{id}(id=${employee.id})}">View</a>
+                                <a class="button button-outline button-sm" th:href="@{/admin/employees/{id}/edit(id=${employee.id})}">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${employees == null or employees.isEmpty()}">
+                        <td colspan="7" class="empty-state">
+                            <div class="empty-icon">💼</div>
+                            <h3>No Employees Added</h3>
+                            <p>Manage cafe staff by creating an employee or promoting an existing user.</p>
+                            <a th:href="@{/admin/employees/new}" class="button button-primary button-sm">+ Add First Employee</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>

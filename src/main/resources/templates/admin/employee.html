@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management | The Midnight Café Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+
+        <nav class="nav">
+            <a th:href="@{/admin}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}" class="active">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <header class="page-header">
+            <div>
+                <h1>Employees & Staff</h1>
+                <p>Manage cafe employees, assign titles and security roles, track hourly rates and status.</p>
+            </div>
+
+            <div class="page-actions">
+                <a class="button button-primary" th:href="@{/admin/employees/new}">
+                    <span>+</span> Add / Promote Employee
+                </a>
+            </div>
+        </header>
+
+        <!-- Employees Table -->
+        <div class="section" th:if="${employees != null and !employees.isEmpty()}">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Job Title</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Hourly Rate</th>
+                        <th>Hire Date</th>
+                        <th>Phone</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="employee : ${employees}">
+                        <td>
+                            <div class="item-name" th:text="${employee.firstName + ' ' + employee.lastName}">Jane Doe</div>
+                            <div class="item-subtext" th:text="${employee.email != null ? employee.email : '—'}">jane@midnightcafe.dev</div>
+                        </td>
+                        <td>
+                            <span class="item-name" th:text="${employee.jobTitle != null ? employee.jobTitle : 'Barista'}">Barista</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-role" th:text="${employee.role != null ? employee.role : 'ROLE_EMPLOYEE'}">ROLE_EMPLOYEE</span>
+                        </td>
+                        <td>
+                            <span class="status"
+                                  th:classappend="${employee.status != null and employee.status.name() == 'ACTIVE' ? 'status-active' : employee.status != null and employee.status.name() == 'SUSPENDED' ? 'status-suspended' : 'status-inactive'}"
+                                  th:text="${employee.status != null ? employee.status : 'ACTIVE'}">ACTIVE</span>
+                        </td>
+                        <td>
+                            $<span th:text="${employee.hourlyRate != null ? #numbers.formatDecimal(employee.hourlyRate, 1, 2) : '0.00'}">17.50</span>/hr
+                        </td>
+                        <td th:text="${employee.hireDate != null ? #temporals.format(employee.hireDate, 'MMM dd, yyyy') : '—'}">Jan 01, 2026</td>
+                        <td th:text="${employee.phoneNumber != null ? employee.phoneNumber : '—'}">555-555-5555</td>
+                        <td>
+                            <div class="table-actions">
+                                <a class="button button-secondary button-sm" th:href="@{/admin/employees/{id}(id=${employee.id})}">View</a>
+                                <a class="button button-outline button-sm" th:href="@{/admin/employees/{id}/edit(id=${employee.id})}">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="section" th:if="${employees == null or employees.isEmpty()}">
+            <div class="empty-state">
+                <div class="empty-icon">💼</div>
+                <h3>No Staff Found</h3>
+                <p>Add employees directly or promote existing users into staff with specific roles and titles.</p>
+                <a class="button button-primary button-sm" th:href="@{/admin/employees/new}">+ Create First Employee</a>
+            </div>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

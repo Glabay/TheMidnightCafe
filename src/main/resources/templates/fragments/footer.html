@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+</head>
+<body>
+    <footer th:fragment="footer" class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img th:src="@{/img/logo.png}" alt="Logo">
+                <span>Midnight Coder</span>
+            </div>
+            <p>&copy; 2025 - 2026 Midnight Coder. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <div class="footer-links">
+                <a href="https://discord.gg/rE3gRMTwkh" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+                    <i class="fa-brands fa-discord"></i>
+                </a>
+                <a href="https://youtube.com/@glabay" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/mike-glabay/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+                <a href="https://facebook.com/glabay-studios" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                    <i class="fa-brands fa-facebook"></i>
+                </a>
+                <a href="https://www.instagram.com/Glabay" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://x.com/GlabayStudios" target="_blank" rel="noopener noreferrer" aria-label="X">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+.register-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.register-logo {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.register-logo img {
+    height: 80px;
+    width: auto;
+    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+}
+
+.register-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--aurora-violet);
+}
+
+.register-container h2 span {
+    color: var(--aurora-violet);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #bbb;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: white;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: var(--aurora-violet);
+    outline: none;
+    box-shadow: 0 0 5px var(--aurora-violet);
+}
+
+.register-btn {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.error-message {
+    color: #ff4d4d;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.auth-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: #bbb;
+}
+
+.auth-footer a {
+    color: var(--aurora-violet);
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.oauth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.oauth-divider span {
+    padding: 0 0.75rem;
+    color: #888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.btn-github {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #24292e;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-github:hover {
+    background: #2f363d;
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.btn-github .github-icon {
+    flex-shrink: 0;
+}

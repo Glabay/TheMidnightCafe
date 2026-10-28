@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: html(
+    title=~{::title},
+    links=~{::links},
+    content=~{::content},
+    scripts=~{::scripts}
+)}">
+<head>
+    <title>The Midnight Café | Welcome</title>
+    <th:block th:fragment="links">
+        <link rel="stylesheet" th:href="@{/css/home.css}">
+    </th:block>
+</head>
+<body>
+<div th:fragment="content" class="home-container">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="welcome-badge">
+            <i class="fas fa-moon"></i>
+            <span>Welcome to The Midnight Café</span>
+        </div>
+        <h1 class="hero-title">
+            Crafted Brews for <span class="gradient-text">Midnight Coders</span> & Thinkers
+        </h1>
+        <p class="hero-subtitle">
+            Step into your sanctuary for deep focus and late-night inspiration. Enjoy artisan coffee, specialty teas, and freshly baked treats designed to power your greatest ideas.
+        </p>
+        <div class="hero-actions">
+            <a th:href="@{/products}" class="btn btn-primary btn-hero">
+                <i class="fas fa-mug-hot"></i>
+                <span>Browse Our Menu</span>
+            </a>
+            <a href="#featured" class="btn btn-outline btn-hero">
+                <i class="fas fa-star"></i>
+                <span>Featured Selections</span>
+            </a>
+        </div>
+        <div class="hero-features">
+            <div class="hero-feature-item">
+                <i class="fas fa-coffee"></i>
+                <span>Artisan Small-Batch Roasts</span>
+            </div>
+            <div class="hero-feature-item">
+                <i class="fas fa-cookie-bite"></i>
+                <span>Fresh Daily Baked Goods</span>
+            </div>
+            <div class="hero-feature-item">
+                <i class="fas fa-laptop-code"></i>
+                <span>Developer-Friendly Space</span>
+            </div>
+            <div class="hero-feature-item">
+                <i class="fas fa-clock"></i>
+                <span>Open Late Every Night</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section id="featured" class="featured-section">
+        <div class="section-header">
+            <span class="section-tag">Handcrafted For You</span>
+            <h2 class="section-title">Featured Café Selections</h2>
+            <p class="section-subtitle">
+                A curated taste of our customer favorites, brewed and prepared fresh for every order.
+            </p>
+        </div>
+
+        <!-- Featured Products Exist -->
+        <div class="featured-grid" th:if="${featuredProducts != null and !featuredProducts.isEmpty()}">
+            <article class="featured-card" th:each="product : ${featuredProducts}">
+                <div class="card-top">
+                    <div class="card-icon-badge">
+                        <i class="fas fa-mug-saucer"></i>
+                    </div>
+                    <span class="card-tag">Featured</span>
+                </div>
+                <h3 class="product-title" th:text="${product.name}">Product Name</h3>
+                <p class="product-description" th:text="${product.description}">Product description goes here.</p>
+                <div class="product-bottom">
+                    <div class="product-price">
+                        <span class="currency">$</span><span th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</span>
+                    </div>
+                    <a class="btn-card-view" th:href="@{/products/{id}(id=${product.productId})}">
+                        <span>View Details</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </article>
+        </div>
+
+        <!-- No Featured Products Placeholder -->
+        <div class="featured-empty" th:if="${featuredProducts == null or featuredProducts.isEmpty()}">
+            <i class="fas fa-mug-hot fa-3x"></i>
+            <h3>Fresh Brews Coming Right Up!</h3>
+            <p>Our baristas are preparing new featured specials. In the meantime, browse our full catalogue to see everything currently available.</p>
+            <a th:href="@{/products}" class="btn btn-primary">
+                <i class="fas fa-utensils"></i>
+                <span>Explore Full Menu</span>
+            </a>
+        </div>
+
+        <!-- Link to Products Page -->
+        <div class="featured-view-all">
+            <a th:href="@{/products}" class="btn btn-primary btn-view-all">
+                <i class="fas fa-store"></i>
+                <span>View All Available Products</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Atmosphere / Experience Section -->
+    <section class="experience-section">
+        <div class="section-header">
+            <span class="section-tag">The Experience</span>
+            <h2 class="section-title">Why The Midnight Café?</h2>
+            <p class="section-subtitle">
+                More than just a coffee shop — an inspiring space crafted for those who build the future.
+            </p>
+        </div>
+        <div class="experience-grid">
+            <div class="experience-card">
+                <div class="experience-icon">
+                    <i class="fas fa-fire-flame-curved"></i>
+                </div>
+                <h3>Artisan Roasts</h3>
+                <p>Ethically sourced premium beans roasted to perfection, delivering rich complexity and clean energy for your day or night.</p>
+            </div>
+            <div class="experience-card">
+                <div class="experience-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <h3>Midnight Sanctuary</h3>
+                <p>Ambient lighting, soft lofi soundscapes, and comfortable seating crafted to help you slip effortlessly into the flow state.</p>
+            </div>
+            <div class="experience-card">
+                <div class="experience-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h3>Built for Creators</h3>
+                <p>Ultra-fast gigabit Wi-Fi, accessible power outlets at every seat, and a welcoming community of developers and designers.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="home-cta-banner">
+        <h2>Ready to Fuel Your Next Breakthrough?</h2>
+        <p>Explore our complete selection of freshly roasted coffees, soothing teas, delicious pastries, and café essentials.</p>
+        <a th:href="@{/products}" class="btn btn-primary btn-hero">
+            <i class="fas fa-utensils"></i>
+            <span>Explore The Full Menu</span>
+        </a>
+    </section>
+
+</div>
+
+<th:block th:fragment="scripts">
+</th:block>
+</body>
+</html>

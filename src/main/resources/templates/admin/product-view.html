@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.name + ' | Product Details | Admin'}">Product Details | Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+        <nav class="nav">
+            <a th:href="@{/admin}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}" class="active">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <header class="page-header">
+            <div>
+                <h1>Product Details</h1>
+                <p>Detailed view and specifications for this cafe product.</p>
+            </div>
+            <div class="page-actions">
+                <a class="button button-secondary" th:href="@{/admin/products}">← Back to Products</a>
+                <a class="button button-primary" th:href="@{/admin/products/{id}/edit(id=${product.productId})}">Edit Product</a>
+            </div>
+        </header>
+
+        <div class="view-card">
+            <div class="view-header">
+                <div>
+                    <h2 th:text="${product.name}">Midnight Mocha</h2>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="badge badge-category" th:text="${product.category != null ? product.category.displayName : 'Standard'}">Beverage</span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="view-item-label">Price</div>
+                    <div class="price" style="font-size: 1.85rem;">
+                        $<span th:text="${product.price != null ? #numbers.formatDecimal(product.price, 1, 2) : '0.00'}">4.50</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-grid">
+                <div class="view-item" style="grid-column: 1 / -1;">
+                    <div class="view-item-label">Description</div>
+                    <div class="view-item-value" style="font-size: 1rem; line-height: 1.6; color: var(--text-secondary);" th:text="${product.description != null and !product.description.isEmpty() ? product.description : 'No description provided.'}">
+                        Rich espresso with velvety steamed milk and hints of dark chocolate.
+                    </div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Product ID</div>
+                    <div class="view-item-value" style="font-family: monospace; font-size: 0.9rem;" th:text="${product.productId}">UUID</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Category</div>
+                    <div class="view-item-value" th:text="${product.category != null ? product.category.displayName : '—'}">Beverage</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Date Created</div>
+                    <div class="view-item-value" th:text="${product.createdAt != null ? #temporals.format(product.createdAt, 'MMMM dd, yyyy HH:mm') : '—'}">Jan 01, 2026 12:00</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Last Updated</div>
+                    <div class="view-item-value" th:text="${product.updatedAt != null ? #temporals.format(product.updatedAt, 'MMMM dd, yyyy HH:mm') : '—'}">—</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

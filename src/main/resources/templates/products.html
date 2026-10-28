@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: html(
+    title=~{::title},
+    links=~{::links},
+    content=~{::content},
+    scripts=~{::scripts}
+)}">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:fragment="links">
+        <link rel="stylesheet" th:href="@{/css/product/product.css}">
+    </th:block>
+    <title>Products Catalogue | The Midnight Café</title>
+</head>
+<body>
+<div th:fragment="content" class="products-container">
+
+    <!-- Hero / Catalogue Banner -->
+    <section class="products-hero">
+        <div class="hero-badge">
+            <i class="fas fa-sparkles"></i> <span>Artisan Menu</span>
+        </div>
+        <h1 class="products-title">Our <span class="gradient-text">Catalogue</span></h1>
+        <p class="products-subtitle">
+            Crafted night-time brews, rich espresso selections, and freshly baked midnight treats.
+        </p>
+    </section>
+
+    <!-- Toolbar: Category Filter Pills & Sort Selector -->
+    <section class="catalogue-toolbar">
+        <!-- Category Filter Pills -->
+        <div class="category-filters" role="tablist">
+            <a th:href="@{/products(page=1, sort=${selectedSort})}"
+               class="category-pill"
+               th:classappend="${selectedCategory == 'ALL' ? 'active' : ''}">
+                <i class="fas fa-th-large"></i> All Products
+            </a>
+            <a th:each="cat : ${categories}"
+               th:href="@{/products(category=${cat.name()}, page=1, sort=${selectedSort})}"
+               class="category-pill"
+               th:classappend="${selectedCategory == cat.name() ? 'active' : ''}">
+                <i th:class="${cat.name() == 'BEVERAGE' ? 'fas fa-mug-hot' : 'fas fa-cookie-bite'}"></i>
+                <span th:text="${cat.displayName}">Category</span>
+            </a>
+        </div>
+
+        <!-- Sort and Controls Bar -->
+        <div class="toolbar-controls">
+            <form th:action="@{/products}" method="get" class="sort-form">
+                <input type="hidden" name="category" th:if="${selectedCategory != 'ALL'}" th:value="${selectedCategory}">
+                <input type="hidden" name="page" value="1">
+
+                <label for="sortSelect" class="sort-label">
+                    <i class="fas fa-sort-amount-down"></i> Sort by:
+                </label>
+                <div class="select-wrapper">
+                    <select id="sortSelect" name="sort" onchange="this.form.submit()" class="sort-select">
+                        <option value="name,asc" th:selected="${selectedSort == 'name,asc'}">Name (A–Z)</option>
+                        <option value="name,desc" th:selected="${selectedSort == 'name,desc'}">Name (Z–A)</option>
+                        <option value="category,asc" th:selected="${selectedSort == 'category,asc'}">Category (A–Z)</option>
+                        <option value="category,desc" th:selected="${selectedSort == 'category,desc'}">Category (Z–A)</option>
+                        <option value="price,asc" th:selected="${selectedSort == 'price,asc'}">Price (Low to High)</option>
+                        <option value="price,desc" th:selected="${selectedSort == 'price,desc'}">Price (High to Low)</option>
+                        <option value="newest" th:selected="${selectedSort == 'newest'}">Newest First</option>
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
+            </form>
+
+            <div class="results-count" th:if="${totalElements != null}">
+                <span th:text="${totalElements}">0</span> items found
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Grid: 4 items wide on max view, 5 rows -->
+    <section class="products-grid-section" th:if="${products != null and !products.isEmpty()}">
+        <div class="products-grid">
+            <article class="product-card" th:each="product : ${products}">
+                <div class="product-card-inner">
+                    <!-- Left: Product Image / Category Icon Display -->
+                    <div class="product-image-wrap">
+                        <div class="product-image-box">
+                            <i th:class="${product.category != null and product.category.name() == 'BAKED_GOODS' ? 'fas fa-cookie-bite product-icon' : 'fas fa-mug-hot product-icon'}"></i>
+                            <span class="image-category-tag"
+                                  th:if="${product.category != null}"
+                                  th:text="${product.category.displayName}">
+                                Beverage
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Right: Product Info (Bold Name, Synopsis, Price, Add to Cart) -->
+                    <div class="product-details-wrap">
+                        <div class="product-header-block">
+                            <h3 class="product-name">
+                                <a th:href="@{/products/{id}(id=${product.productId})}" th:text="${product.name}">Product Name</a>
+                            </h3>
+                        </div>
+
+                        <p class="product-synopsis" th:text="${product.description}">
+                            A rich and velvety beverage crafted with dark cocoa and creamy steamed milk.
+                        </p>
+
+                        <div class="product-action-footer">
+                            <div class="product-price">
+                                <span class="currency">$</span><span th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</span>
+                            </div>
+
+                            <form th:action="@{/api/v1/products/cart/{cartId}(cartId='00000000-0000-0000-0000-000000000000')}"
+                                  method="post"
+                                  class="add-cart-form">
+                                <input type="hidden" name="productId" th:value="${product.productId}">
+                                <input type="hidden" name="name" th:value="${product.name}">
+                                <input type="hidden" name="description" th:value="${product.description}">
+                                <input type="hidden" name="price" th:value="${product.price}">
+                                <!--/*@thymesVar id="this" type=""*/-->
+                                <button type="button" class="btn-add-cart"
+                                        th:data-product-id="${product.productId}"
+                                        th:data-product-name="${product.name}"
+                                        th:data-product-price="${product.price}"
+                                        th:data-product-category="${product.category != null ? product.category.name() : ''}"
+                                        onclick="addToCart(
+                                            this.dataset.productId,
+                                            this.dataset.productName,
+                                            parseFloat(this.dataset.productPrice),
+                                            1,
+                                            this.dataset.productCategory
+                                        )">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav class="pagination-nav" th:if="${totalPages > 1}" aria-label="Products pagination">
+            <div class="pagination-info">
+                Page <span th:text="${currentPage}">1</span> of <span th:text="${totalPages}">1</span>
+            </div>
+
+            <ul class="pagination-list">
+                <!-- Previous Button -->
+                <li class="page-item" th:classappend="${!hasPrevious ? 'disabled' : ''}">
+                    <a class="page-link page-prev"
+                       th:href="@{/products(page=${currentPage - 1}, category=${selectedCategory != 'ALL' ? selectedCategory : null}, sort=${selectedSort})}"
+                       aria-label="Previous page">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+
+                <!-- Page Number Pills -->
+                <li th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                    class="page-item"
+                    th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                    <a class="page-link"
+                       th:href="@{/products(page=${pageNum}, category=${selectedCategory != 'ALL' ? selectedCategory : null}, sort=${selectedSort})}"
+                       th:text="${pageNum}">
+                        1
+                    </a>
+                </li>
+
+                <!-- Next Button -->
+                <li class="page-item" th:classappend="${!hasNext ? 'disabled' : ''}">
+                    <a class="page-link page-next"
+                       th:href="@{/products(page=${currentPage + 1}, category=${selectedCategory != 'ALL' ? selectedCategory : null}, sort=${selectedSort})}"
+                       aria-label="Next page">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </section>
+
+    <!-- Empty State -->
+    <section class="products-empty-state" th:if="${products == null or products.isEmpty()}">
+        <div class="empty-icon-wrap">
+            <i class="fas fa-coffee"></i>
+        </div>
+        <h2 class="empty-title">No Products Found</h2>
+        <p class="empty-text">
+            We couldn't find any items matching your selected category. Check back soon or browse all products!
+        </p>
+        <div class="empty-actions">
+            <a th:href="@{/products}" class="btn btn-primary">
+                <i class="fas fa-th-large"></i> View All Products
+            </a>
+        </div>
+    </section>
+
+</div>
+
+<th:block th:fragment="scripts">
+</th:block>
+</body>
+</html>

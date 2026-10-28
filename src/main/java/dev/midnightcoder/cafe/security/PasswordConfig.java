@@ -1,0 +1,22 @@
+package dev.midnightcoder.cafe.security;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+/**
+ * @author Glabay | The Midnight Coder
+ * @project TheMidnightCafe
+ * @social Discord: Glabay
+ * @website <a href="https://midnightcoder.dev">Midnight Coder</a>
+ * @since 2026-08-23
+ */
+@Configuration
+public class PasswordConfig {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+}

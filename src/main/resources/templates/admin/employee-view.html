@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${employee.firstName + ' ' + employee.lastName + ' | Employee Details | Admin'}">Employee Details | Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+        <nav class="nav">
+            <a th:href="@{/admin}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}" class="active">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <header class="page-header">
+            <div>
+                <h1>Employee Profile</h1>
+                <p>Employee role assignments, operational title, compensation, and account details.</p>
+            </div>
+            <div class="page-actions">
+                <a class="button button-secondary" th:href="@{/admin/employees}">← Back to Employees</a>
+                <a class="button button-primary" th:href="@{/admin/employees/{id}/edit(id=${employee.id})}">Edit Employee</a>
+            </div>
+        </header>
+
+        <div class="view-card">
+            <div class="view-header">
+                <div>
+                    <h2 th:text="${employee.firstName + ' ' + employee.lastName}">Jane Doe</h2>
+                    <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                        <span class="badge badge-role" th:text="${employee.role != null ? employee.role : 'ROLE_EMPLOYEE'}">ROLE_EMPLOYEE</span>
+                        <span class="status"
+                              th:classappend="${employee.status != null and employee.status.name() == 'ACTIVE' ? 'status-active' : employee.status != null and employee.status.name() == 'SUSPENDED' ? 'status-suspended' : 'status-inactive'}"
+                              th:text="${employee.status != null ? employee.status : 'ACTIVE'}">ACTIVE</span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="view-item-label">Hourly Compensation</div>
+                    <div class="price" style="font-size: 1.75rem;">
+                        $<span th:text="${employee.hourlyRate != null ? #numbers.formatDecimal(employee.hourlyRate, 1, 2) : '0.00'}">17.50</span>/hr
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-grid">
+                <div class="view-item">
+                    <div class="view-item-label">Job Title</div>
+                    <div class="view-item-value" th:text="${employee.jobTitle != null ? employee.jobTitle : 'Barista'}">Barista</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Security Role</div>
+                    <div class="view-item-value" style="color: var(--aurora-violet);" th:text="${employee.role != null ? employee.role : 'ROLE_EMPLOYEE'}">ROLE_EMPLOYEE</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Email Address</div>
+                    <div class="view-item-value" th:text="${employee.email != null ? employee.email : '—'}">jane@midnightcafe.dev</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Phone Number</div>
+                    <div class="view-item-value" th:text="${employee.phoneNumber != null ? employee.phoneNumber : '—'}">(555) 555-5555</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Hire Date</div>
+                    <div class="view-item-value" th:text="${employee.hireDate != null ? #temporals.format(employee.hireDate, 'MMMM dd, yyyy') : '—'}">Jan 01, 2026</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Employment Status</div>
+                    <div class="view-item-value" th:text="${employee.status != null ? employee.status : 'ACTIVE'}">ACTIVE</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Employee ID</div>
+                    <div class="view-item-value" style="font-family: monospace; font-size: 0.85rem;" th:text="${employee.id}">UUID</div>
+                </div>
+
+                <div class="view-item" th:if="${linkedUser != null}">
+                    <div class="view-item-label">Linked User Account</div>
+                    <div class="view-item-value" style="color: var(--aurora-cyan);" th:text="${linkedUser.identity}">user@midnightcafe.dev</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Created</div>
+                    <div class="view-item-value" th:text="${employee.createdAt != null ? #temporals.format(employee.createdAt, 'MMMM dd, yyyy HH:mm') : '—'}">Jan 01, 2026 10:00</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Last Updated</div>
+                    <div class="view-item-value" th:text="${employee.updatedAt != null ? #temporals.format(employee.updatedAt, 'MMMM dd, yyyy HH:mm') : '—'}">—</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

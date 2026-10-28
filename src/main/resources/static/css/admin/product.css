@@ -1,0 +1,24 @@
+@import url('/css/admin/dashboard.css');
+
+.product-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.description {
+    max-width: 380px;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.price {
+    font-weight: 600;
+    color: var(--aurora-yellow);
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}

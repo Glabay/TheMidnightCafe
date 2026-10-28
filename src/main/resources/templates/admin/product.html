@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products Management | The Midnight Café Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+
+        <nav class="nav">
+            <a th:href="@{/admin}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}" class="active">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <header class="page-header">
+            <div>
+                <h1>Products</h1>
+                <p>Manage cafe catalogue, beverage offerings, baked goods, and pricing.</p>
+            </div>
+
+            <a class="button button-primary" th:href="@{/admin/products/new}">
+                <span>+</span> Add Product
+            </a>
+        </header>
+
+        <!-- Product Table -->
+        <div class="section" th:if="${products != null and !products.isEmpty()}">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product : ${products}">
+                        <td>
+                            <div class="item-name" th:text="${product.name}">Coffee</div>
+                        </td>
+                        <td>
+                            <span class="badge badge-category" th:text="${product.category != null ? product.category.displayName : '—'}">Beverage</span>
+                        </td>
+                        <td>
+                            <div class="description" th:text="${product.description}">A delicious cup of coffee.</div>
+                        </td>
+                        <td>
+                            <span class="price">$<span th:text="${product.price != null ? #numbers.formatDecimal(product.price, 1, 2) : '0.00'}">0.00</span></span>
+                        </td>
+                        <td th:text="${product.createdAt != null ? #temporals.format(product.createdAt, 'MMM dd, yyyy') : '—'}">Jan 01, 2026</td>
+                        <td th:text="${product.updatedAt != null ? #temporals.format(product.updatedAt, 'MMM dd, yyyy') : '—'}">—</td>
+                        <td>
+                            <div class="table-actions">
+                                <a class="button button-secondary button-sm" th:href="@{/admin/products/{id}(id=${product.productId})}">View</a>
+                                <a class="button button-outline button-sm" th:href="@{/admin/products/{id}/edit(id=${product.productId})}">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="section" th:if="${products == null or products.isEmpty()}">
+            <div class="empty-state">
+                <div class="empty-icon">🥐</div>
+                <h3>No Products Found</h3>
+                <p>You haven't added any products to the catalogue yet.</p>
+                <a class="button button-primary button-sm" th:href="@{/admin/products/new}">+ Add Your First Product</a>
+            </div>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

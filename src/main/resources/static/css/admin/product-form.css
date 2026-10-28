@@ -1,0 +1,10 @@
+@import url('/css/admin/dashboard.css');
+
+.form-card {
+    background: var(--midnight-bg-card);
+    border: 1px solid var(--midnight-border);
+    border-radius: 12px;
+    padding: 2.25rem;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px);
+}

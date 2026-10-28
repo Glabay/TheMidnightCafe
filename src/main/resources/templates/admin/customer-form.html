@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${customer != null and customer.id != null ? 'Edit Customer | Admin' : 'New Customer | Admin'}">Customer | Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+
+<div class="layout">
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+        <nav class="nav">
+            <a th:href="@{/admin}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}" class="active">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <header class="page-header">
+            <div>
+                <h1 th:text="${customer != null and customer.id != null ? 'Edit Customer Profile' : 'Add New Customer'}">Add Customer</h1>
+                <p>Manage customer personal details, contact preferences, and loyalty program.</p>
+            </div>
+            <a class="button button-secondary" th:href="@{/admin/customers}">← Back to Customers</a>
+        </header>
+
+        <div class="form-container">
+            <form th:action="${customer != null and customer.id != null ? '/admin/customers/' + customer.id : '/admin/customers'}"
+                  method="post">
+
+                <!-- Linked User Account -->
+                <div class="form-group" th:if="${users != null and !users.isEmpty()}">
+                    <label for="userId">Linked User Account</label>
+                    <select id="userId" name="userId">
+                        <option value="">-- None (Direct / Guest Customer) --</option>
+                        <option th:each="user : ${users}"
+                                th:value="${user.id}"
+                                th:text="${user.identity + (user.id != null ? ' (' + #strings.substring(user.id.toString(), 0, 8) + '...)' : '')}"
+                                th:selected="${customer != null and customer.userId != null and customer.userId.equals(user.id)}">
+                            user@example.com
+                        </option>
+                    </select>
+                    <div class="form-hint">Connect this customer profile to a registered user login account.</div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required">*</span></label>
+                        <input type="text"
+                               id="firstName"
+                               name="firstName"
+                               required
+                               maxlength="100"
+                               th:value="${customer != null ? customer.firstName : ''}"
+                               placeholder="e.g. John">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required">*</span></label>
+                        <input type="text"
+                               id="lastName"
+                               name="lastName"
+                               required
+                               maxlength="100"
+                               th:value="${customer != null ? customer.lastName : ''}"
+                               placeholder="e.g. Doe">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="preferredName">Preferred Name / Nickname</label>
+                    <input type="text"
+                           id="preferredName"
+                           name="preferredName"
+                           maxlength="100"
+                           th:value="${customer != null ? customer.preferredName : ''}"
+                           placeholder="e.g. Johnny">
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               required
+                               maxlength="255"
+                               th:value="${customer != null ? customer.email : ''}"
+                               placeholder="e.g. customer@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number <span class="required">*</span></label>
+                        <input type="tel"
+                               id="phoneNumber"
+                               name="phoneNumber"
+                               required
+                               maxlength="30"
+                               th:value="${customer != null ? customer.phoneNumber : ''}"
+                               placeholder="e.g. (555) 123-4567">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="birthday">Birthday</label>
+                        <input type="date"
+                               id="birthday"
+                               name="birthday"
+                               th:value="${customer != null and customer.birthday != null ? customer.birthday : ''}">
+                        <div class="form-hint">Used for cafe birthday rewards and special treats.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loyaltyPoints">Loyalty Points</label>
+                        <input type="number"
+                               id="loyaltyPoints"
+                               name="loyaltyPoints"
+                               min="0"
+                               step="1"
+                               th:value="${customer != null and customer.loyaltyPoints != null ? customer.loyaltyPoints : 0}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox"
+                               name="marketingOptIn"
+                               value="true"
+                               th:checked="${customer != null and customer.marketingOptIn}">
+                        <span>Opt-in to Midnight Café newsletter, discounts, and event invitations</span>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <a class="button button-secondary" th:href="@{/admin/customers}">Cancel</a>
+                    <button class="button button-primary"
+                            type="submit"
+                            th:text="${customer != null and customer.id != null ? 'Save Changes' : 'Register Customer'}">
+                        Register Customer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

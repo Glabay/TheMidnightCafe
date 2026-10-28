@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management | The Midnight Café Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+<div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+
+        <nav class="nav">
+            <a th:href="@{/admin}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}" class="active">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+        <header class="page-header">
+            <div>
+                <h1>Customers</h1>
+                <p>View customer profiles, contact info, loyalty rewards, and marketing preferences.</p>
+            </div>
+
+            <a class="button button-primary" th:href="@{/admin/customers/new}">
+                <span>+</span> Add Customer
+            </a>
+        </header>
+
+        <!-- Customers Table -->
+        <div class="section" th:if="${customers != null and !customers.isEmpty()}">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Birthday</th>
+                        <th>Loyalty Points</th>
+                        <th>Marketing</th>
+                        <th>Created</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customer : ${customers}">
+                        <td>
+                            <div class="item-name">
+                                <span th:text="${customer.preferredName != null and !customer.preferredName.isEmpty() ? customer.preferredName : customer.firstName}">John</span>
+                                <span th:text="${' ' + customer.lastName}">Doe</span>
+                            </div>
+                            <div class="item-subtext" th:if="${customer.preferredName != null and !customer.preferredName.isEmpty()}"
+                                 th:text="'Legal: ' + ${customer.firstName} + ' ' + ${customer.lastName}">Legal Name</div>
+                        </td>
+                        <td th:text="${customer.email != null ? customer.email : '—'}">john@example.com</td>
+                        <td th:text="${customer.phoneNumber != null ? customer.phoneNumber : '—'}">555-555-5555</td>
+                        <td th:text="${customer.birthday != null ? #temporals.format(customer.birthday, 'MMM dd, yyyy') : '—'}">—</td>
+                        <td>
+                            <span class="badge" style="background: rgba(241, 197, 106, 0.15); color: var(--aurora-yellow); border: 1px solid rgba(241, 197, 106, 0.3);"
+                                  th:text="${customer.loyaltyPoints != null ? customer.loyaltyPoints + ' pts' : '0 pts'}">0 pts</span>
+                        </td>
+                        <td>
+                            <span th:if="${customer.marketingOptIn}" class="status status-opted-in">Opted In</span>
+                            <span th:unless="${customer.marketingOptIn}" class="status status-opted-out">Opted Out</span>
+                        </td>
+                        <td th:text="${customer.createdAt != null ? #temporals.format(customer.createdAt, 'MMM dd, yyyy') : '—'}">Jan 01, 2026</td>
+                        <td>
+                            <div class="table-actions">
+                                <a class="button button-secondary button-sm" th:href="@{/admin/customers/{id}(id=${customer.id})}">View</a>
+                                <a class="button button-outline button-sm" th:href="@{/admin/customers/{id}/edit(id=${customer.id})}">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="section" th:if="${customers == null or customers.isEmpty()}">
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <h3>No Customers Found</h3>
+                <p>Register a new customer or import profiles to start managing customer accounts.</p>
+                <a class="button button-primary button-sm" th:href="@{/admin/customers/new}">+ Add First Customer</a>
+            </div>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

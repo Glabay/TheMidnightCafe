@@ -1,0 +1,14 @@
+/**
+ * @author Glabay | The Midnight Coder
+ * @project TheMidnightCafe
+ * @social Discord: Glabay
+ * @website <a href="https://midnightcoder.dev">Midnight Coder</a>
+ * @since 2026-08-11
+ */
+@ApplicationModule(allowedDependencies = {
+    "users::api",
+    "products::api"
+})
+package dev.midnightcoder.cafe.customers;
+
+import org.springframework.modulith.ApplicationModule;

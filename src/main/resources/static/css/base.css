@@ -1,0 +1,92 @@
+:root {
+    --midnight-bg: #0b0e14;
+    --midnight-deep: #05070a;
+
+    --aurora-violet: #a855f7;
+    --aurora-purple: #9d50bb;
+    --aurora-pink: #ff0080;
+    --aurora-red: #ff0000;
+    --aurora-yellow: #f1c56a;
+    --aurora-blue: #3b82f6;
+    --aurora-cyan: #06b6d4;
+    --aurora-green: #10b981;
+
+    --text-color: #e0e0e0;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(224, 224, 224, 0.75);
+    --text-muted: rgba(224, 224, 224, 0.6);
+
+    --accent-color: #bb86fc;
+
+    --midnight-card: rgba(255, 255, 255, 0.03);
+    --midnight-border: rgba(168, 85, 247, 0.15);
+    --midnight-bg-card: rgba(168, 85, 247, 0.15);
+
+    --bg-secondary: rgba(255, 255, 255, 0.03);
+    --border-color: rgba(255, 255, 255, 0.08);
+
+    --primary-color: var(--aurora-violet);
+
+    --ice-blue: #a5f2f3;
+    --ice-shadow: #74c7d3;
+    --penguin-black: #2c2c2c;
+    --penguin-white: #ffffff;
+    --beak-orange: #ff9d00;
+}
+
+.social-links a {
+    font-size: 1.4rem;
+    margin: 0 0.5rem;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.social-links a:hover {
+    transform: translateY(-2px);
+    color: #1da1f2;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--midnight-bg) 0%, var(--midnight-deep) 100%);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.aurora-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.aurora-glow::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(157, 80, 187, 0.1) 0%, transparent 40%);
+    filter: blur(80px);
+    animation: aurora-move 20s infinite alternate;
+}
+
+@keyframes aurora-move {
+    from { transform: translate(0, 0); }
+    to { transform: translate(5%, 5%); }
+}
+
+main {
+    flex: 1;
+}

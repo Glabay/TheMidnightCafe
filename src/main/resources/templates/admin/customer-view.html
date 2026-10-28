@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${customer.firstName + ' ' + customer.lastName + ' | Customer Details | Admin'}">Customer Details | Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+</head>
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+        <nav class="nav">
+            <a th:href="@{/admin}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}" class="active">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <header class="page-header">
+            <div>
+                <h1>Customer Profile</h1>
+                <p>Complete customer record, contact information, loyalty status, and account activity.</p>
+            </div>
+            <div class="page-actions">
+                <a class="button button-secondary" th:href="@{/admin/customers}">← Back to Customers</a>
+                <a class="button button-primary" th:href="@{/admin/customers/{id}/edit(id=${customer.id})}">Edit Customer</a>
+            </div>
+        </header>
+
+        <div class="view-card">
+            <div class="view-header">
+                <div>
+                    <h2>
+                        <span th:text="${customer.preferredName != null and !customer.preferredName.isEmpty() ? customer.preferredName : customer.firstName}">John</span>
+                        <span th:text="${' ' + customer.lastName}">Doe</span>
+                    </h2>
+                    <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                        <span th:if="${customer.marketingOptIn}" class="status status-opted-in">Marketing Opted-In</span>
+                        <span th:unless="${customer.marketingOptIn}" class="status status-opted-out">Marketing Opted-Out</span>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="view-item-label">Loyalty Rewards</div>
+                    <div style="font-size: 1.75rem; font-weight: 700; color: var(--aurora-yellow);">
+                        <span th:text="${customer.loyaltyPoints != null ? customer.loyaltyPoints : 0}">0</span> pts
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-grid">
+                <div class="view-item">
+                    <div class="view-item-label">Legal Name</div>
+                    <div class="view-item-value" th:text="${customer.firstName + ' ' + customer.lastName}">John Doe</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Preferred Name</div>
+                    <div class="view-item-value" th:text="${customer.preferredName != null and !customer.preferredName.isEmpty() ? customer.preferredName : '—'}">Johnny</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Email Address</div>
+                    <div class="view-item-value" th:text="${customer.email != null ? customer.email : '—'}">customer@example.com</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Phone Number</div>
+                    <div class="view-item-value" th:text="${customer.phoneNumber != null ? customer.phoneNumber : '—'}">(555) 555-5555</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Birthday</div>
+                    <div class="view-item-value" th:text="${customer.birthday != null ? #temporals.format(customer.birthday, 'MMMM dd, yyyy') : '—'}">—</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Customer ID</div>
+                    <div class="view-item-value" style="font-family: monospace; font-size: 0.85rem;" th:text="${customer.id}">UUID</div>
+                </div>
+
+                <div class="view-item" th:if="${linkedUser != null}">
+                    <div class="view-item-label">Linked User Account</div>
+                    <div class="view-item-value" style="color: var(--aurora-violet);" th:text="${linkedUser.identity}">user@midnightcafe.dev</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Registration Date</div>
+                    <div class="view-item-value" th:text="${customer.createdAt != null ? #temporals.format(customer.createdAt, 'MMMM dd, yyyy HH:mm') : '—'}">Jan 01, 2026 10:00</div>
+                </div>
+
+                <div class="view-item">
+                    <div class="view-item-label">Last Profile Update</div>
+                    <div class="view-item-value" th:text="${customer.updatedAt != null ? #temporals.format(customer.updatedAt, 'MMMM dd, yyyy HH:mm') : '—'}">—</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

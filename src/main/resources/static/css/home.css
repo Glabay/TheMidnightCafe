@@ -1,0 +1,474 @@
+/* ==========================================================================
+   Home Page Styles - The Midnight Café
+   ========================================================================== */
+
+.home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4.5rem;
+}
+
+/* ==========================================================================
+   Hero Section
+   ========================================================================== */
+
+.hero-section {
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    background: radial-gradient(circle at 50% 30%, rgba(168, 85, 247, 0.12) 0%, rgba(11, 14, 20, 0) 70%);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    background: rgba(168, 85, 247, 0.12);
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    border-radius: 9999px;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);
+}
+
+.welcome-badge i {
+    color: var(--aurora-yellow);
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0 auto 1.25rem;
+    max-width: 850px;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #ffffff 0%, var(--aurora-violet) 65%, var(--accent-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(168, 85, 247, 0.35);
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 680px;
+    margin: 0 auto 2.25rem;
+}
+
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.btn-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.75rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-hero:hover {
+    transform: translateY(-2px);
+}
+
+/* Quick Features Highlight Bar */
+.hero-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-feature-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.hero-feature-item i {
+    color: var(--aurora-violet);
+    font-size: 1.15rem;
+}
+
+/* ==========================================================================
+   Section Headers
+   ========================================================================== */
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.section-tag {
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--aurora-violet);
+    margin-bottom: 0.5rem;
+}
+
+.section-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Featured Products Section
+   ========================================================================== */
+
+.featured-section {
+    position: relative;
+}
+
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.featured-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(168, 85, 247, 0.18);
+    border-radius: 14px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--aurora-violet), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.featured-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(168, 85, 247, 0.45);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(168, 85, 247, 0.15);
+}
+
+.featured-card:hover::before {
+    opacity: 1;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.card-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(168, 85, 247, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--aurora-violet);
+    font-size: 1.2rem;
+    border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.card-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 0.25rem 0.65rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: var(--text-muted);
+}
+
+.product-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+    line-height: 1.3;
+}
+
+.product-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 1.5rem;
+    flex-grow: 1;
+}
+
+.product-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.product-price {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    display: flex;
+    align-items: baseline;
+}
+
+.product-price .currency {
+    font-size: 1rem;
+    margin-right: 2px;
+    color: var(--aurora-violet);
+}
+
+.btn-card-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    color: var(--text-primary);
+    background: rgba(168, 85, 247, 0.1);
+    transition: all 0.25s ease;
+}
+
+.btn-card-view:hover {
+    background: var(--aurora-violet);
+    color: var(--midnight-bg);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+    transform: translateX(2px);
+}
+
+/* Empty featured state */
+.featured-empty {
+    text-align: center;
+    padding: 3.5rem 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(168, 85, 247, 0.25);
+    border-radius: 14px;
+    margin-bottom: 2rem;
+}
+
+.featured-empty i {
+    color: var(--aurora-violet);
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.featured-empty h3 {
+    font-size: 1.4rem;
+    margin: 0 0 0.5rem;
+    color: var(--text-primary);
+}
+
+.featured-empty p {
+    color: var(--text-secondary);
+    max-width: 450px;
+    margin: 0 auto 1.5rem;
+}
+
+/* View All Link Area */
+.featured-view-all {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 2rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+/* ==========================================================================
+   Experience / Atmosphere Section
+   ========================================================================= */
+
+.experience-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.75rem;
+}
+
+.experience-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 2rem 1.75rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.experience-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(168, 85, 247, 0.3);
+    transform: translateY(-4px);
+}
+
+.experience-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    color: var(--aurora-violet);
+    font-size: 1.5rem;
+}
+
+.experience-card h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+}
+
+.experience-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Call to Action Banner
+   ========================================================================== */
+
+.home-cta-banner {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(157, 80, 187, 0.08) 100%);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 18px;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.home-cta-banner h2 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+}
+
+.home-cta-banner p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 1.75rem;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .home-container {
+        padding: 1.5rem 1rem 3rem;
+        gap: 3.5rem;
+    }
+
+    .hero-section {
+        padding: 2.5rem 1rem;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-hero {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .featured-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .experience-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-cta-banner {
+        padding: 2rem 1.25rem;
+    }
+
+    .home-cta-banner h2 {
+        font-size: 1.6rem;
+    }
+}

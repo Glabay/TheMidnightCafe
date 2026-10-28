@@ -1,0 +1,34 @@
+services:
+  redis:
+    image: redis:8.6.2-alpine
+    container_name: midnight-cafe-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - midnight-network
+
+  postgres:
+    image: postgres:18-alpine
+    container_name: midnight-cafe-postgres
+    env_file:
+      - .env
+    ports:
+      - "5496:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - midnight-network
+
+networks:
+  midnight-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,15 @@
+services:
+  k6:
+    image: grafana/k6:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./k6/scripts:/scripts:ro
+      - ./k6/results:/results
+    environment:
+      BASE_URL: ${BASE_URL:-http://host.docker.internal:8080}
+      CUSTOMER_IDENTITY: ${CUSTOMER_IDENTITY:-charlie.brown@example.com}
+      CUSTOMER_PASSWORD: ${CUSTOMER_PASSWORD:-Password123!}
+      ADMIN_IDENTITY: ${ADMIN_IDENTITY:-alice.manager@midnightcafe.dev}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Password123!}
+    command: run --summary-export=/results/result-summary.json /scripts/load-test.js

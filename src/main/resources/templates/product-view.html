@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: html(
+          title=~{::title},
+          links=~{::links},
+          content=~{::content},
+          scripts=~{::scripts}
+      )}">
+<head>
+    <title th:text="${product.name != null ? product.name + ' | The Midnight Café' : 'Product Details | The Midnight Café'}">Midnight Coder | Product</title>
+
+    <th:block th:fragment="links">
+        <link rel="stylesheet" th:href="@{/css/product/product-view.css}">
+    </th:block>
+</head>
+
+<body>
+
+<div th:fragment="content" class="product-view-container">
+
+    <!-- Navigation / Breadcrumbs -->
+    <nav class="product-view-nav" aria-label="Breadcrumb">
+        <a th:href="@{/products}" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Catalogue</span>
+        </a>
+
+        <div class="breadcrumb-trail">
+            <a th:href="@{/}"><i class="fas fa-home"></i> Home</a>
+            <span class="separator">/</span>
+            <a th:href="@{/products}">Catalogue</a>
+            <span class="separator">/</span>
+            <span class="current" th:text="${product.name}">Product Name</span>
+        </div>
+    </nav>
+
+    <!-- Main Product Card -->
+    <article class="product-main-card">
+
+        <!-- Left: Product Showcase Display -->
+        <section class="product-showcase">
+            <div class="showcase-header">
+                <span class="showcase-category-tag">
+                    <i th:class="${product.category != null and product.category.name() == 'BAKED_GOODS' ? 'fas fa-cookie-bite' : 'fas fa-mug-hot'}"></i>
+                    <span th:text="${product.category != null ? product.category.displayName : 'Specialty'}">Beverage</span>
+                </span>
+
+                <span class="freshness-badge">
+                    <span class="pulse-dot"></span> Fresh Batch
+                </span>
+            </div>
+
+            <div class="showcase-icon-area">
+                <i th:class="${product.category != null and product.category.name() == 'BAKED_GOODS' ? 'fas fa-cookie-bite product-hero-icon' : 'fas fa-mug-hot product-hero-icon'}"></i>
+            </div>
+
+            <div class="showcase-footer">
+                <i class="fas fa-sparkles"></i>
+                <span>Handcrafted Artisan Midnight Recipe</span>
+            </div>
+        </section>
+
+        <!-- Right: Product Information & Purchase Controls -->
+        <section class="product-details">
+
+            <div class="details-top-badges">
+                <span class="artisan-badge">
+                    <i class="fas fa-moon"></i> Midnight Café Special
+                </span>
+            </div>
+
+            <h1 class="product-title" th:text="${product.name}">
+                Product Name
+            </h1>
+
+            <div class="product-rating-row">
+                <div class="stars" aria-label="5 out of 5 stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <span class="rating-value">5.0</span>
+                <span class="rating-divider">•</span>
+                <span class="reviews-count">Customer Favorite</span>
+            </div>
+
+            <div class="product-price-box">
+                <span class="currency">$</span><span class="price-val" th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</span>
+                <span class="price-sub">tax included</span>
+            </div>
+
+            <p class="product-description-text" th:text="${product.description}">
+                Product description goes here.
+            </p>
+
+            <div class="product-perks">
+                <div class="perk-item">
+                    <i class="fas fa-seedling"></i>
+                    <span>Premium Quality</span>
+                </div>
+                <div class="perk-item">
+                    <i class="fas fa-stopwatch"></i>
+                    <span>Made to Order</span>
+                </div>
+                <div class="perk-item">
+                    <i class="fas fa-mug-saucer"></i>
+                    <span>Café Pickup</span>
+                </div>
+            </div>
+
+            <!-- Action & Purchase Form -->
+            <div class="product-action-card">
+                <div class="action-row">
+                    <div class="quantity-group">
+                        <label for="productQuantity" class="qty-label">Quantity</label>
+                        <div class="quantity-selector">
+                            <button type="button" class="qty-btn qty-btn-minus" aria-label="Decrease quantity" onclick="decrementQty()">−</button>
+                            <input type="number" id="productQuantity" value="1" min="1" max="99" class="qty-input" aria-label="Quantity" readonly>
+                            <button type="button" class="qty-btn qty-btn-plus" aria-label="Increase quantity" onclick="incrementQty()">+</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-add-to-cart" id="addToCartBtn"
+                            th:onclick="'handleAddToCart(\'' + ${#strings.replace(product.name, '\'', '\\\'')} + '\', \'' + ${product.productId} + '\', ' + ${product.price} + ', \'' + ${product.category != null ? product.category.name() : ''} + '\')'">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metadata Grid -->
+            <div class="product-meta-grid">
+                <div class="meta-box">
+                    <span class="meta-title"><i class="fas fa-hashtag"></i> Product ID</span>
+                    <span class="meta-data" th:text="${product.productId}">UUID</span>
+                </div>
+                <div class="meta-box">
+                    <span class="meta-title"><i class="fas fa-calendar-check"></i> Added</span>
+                    <span class="meta-data" th:text="${product.createdAt != null ? #temporals.format(product.createdAt, 'MMM dd, yyyy') : 'Recent'}">Jan 01, 2026</span>
+                </div>
+                <div class="meta-box">
+                    <span class="meta-title"><i class="fas fa-layer-group"></i> Category</span>
+                    <span class="meta-data" th:text="${product.category != null ? product.category.displayName : 'Specialty'}">Beverage</span>
+                </div>
+            </div>
+
+        </section>
+
+    </article>
+
+    <!-- Artisan Story / Highlights Grid -->
+    <section class="product-extra-section">
+        <div class="extra-grid">
+            <div class="extra-card">
+                <div class="extra-icon">
+                    <i class="fas fa-fire-flame-curved"></i>
+                </div>
+                <h3>Artisan Preparation</h3>
+                <p>Every item at The Midnight Café is prepared on-demand with premium beans, spices, and ingredients for uncompromising freshness.</p>
+            </div>
+            <div class="extra-card">
+                <div class="extra-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h3>Fuel for Builders</h3>
+                <p>Engineered to spark productivity, focus, and creativity through late-night coding sessions and early-morning breakthroughs.</p>
+            </div>
+            <div class="extra-card">
+                <div class="extra-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <h3>Midnight Guarantee</h3>
+                <p>We take pride in every creation. If your order isn't completely delicious, our baristas will gladly craft a replacement.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Navigation -->
+    <div class="catalogue-nav-bottom">
+        <a th:href="@{/products}" class="btn-back-catalogue">
+            <i class="fas fa-arrow-left"></i>
+            <span>Browse All Catalogue Products</span>
+        </a>
+    </div>
+
+</div>
+
+<th:block th:fragment="scripts">
+</th:block>
+
+</body>
+</html>

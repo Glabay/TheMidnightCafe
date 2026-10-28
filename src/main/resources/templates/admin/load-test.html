@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K6 Load Test Dashboard | The Midnight Café Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/admin/load-test.css}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- =========================
+         Sidebar
+         ========================= -->
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-icon">☕</span>
+            <span>Midnight Admin</span>
+        </div>
+
+        <nav class="nav">
+            <a th:href="@{/admin}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a th:href="@{/admin/products}">
+                <span>🥐</span>
+                <span>Products</span>
+            </a>
+            <a th:href="@{/admin/customers}">
+                <span>👥</span>
+                <span>Customers</span>
+            </a>
+            <a th:href="@{/admin/employees}">
+                <span>💼</span>
+                <span>Employees</span>
+            </a>
+            <a th:href="@{/admin/load-test}" class="active">
+                <span>⚡</span>
+                <span>Load Tests</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/}">
+                <span>←</span>
+                <span>Back to Storefront</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- =========================
+         Main Content
+         ========================= -->
+    <main class="content">
+
+        <!-- Page Header -->
+        <header class="page-header">
+            <div>
+                <h1>K6 Load Test Analytics</h1>
+                <p>Human-readable insights, request throughput, latency percentiles, and endpoint health.</p>
+            </div>
+            <div class="page-actions">
+                <button type="button" class="button button-secondary" id="btnReloadDefault">
+                    <span>🔄</span> Reload Server Data
+                </button>
+                <button type="button" class="button button-outline" id="btnCopyJson">
+                    <span>📋</span> Copy JSON
+                </button>
+                <button type="button" class="button button-primary" onclick="document.getElementById('k6FileInput').click()">
+                    <span>📁</span> Load Summary JSON
+                </button>
+            </div>
+        </header>
+
+        <!-- Dropzone for Drag & Drop / File Selection -->
+        <input type="file" id="k6FileInput" accept=".json,application/json" style="display: none;">
+        <div class="k6-dropzone" id="k6Dropzone" title="Click or drag and drop a K6 result-summary.json file here">
+            <div class="k6-dropzone-content">
+                <span class="k6-dropzone-icon">⚡</span>
+                <div class="k6-dropzone-text">
+                    <h4>Load Custom K6 Summary File</h4>
+                    <p>Drag and drop any <code>result-summary.json</code> here or click to browse from your computer.</p>
+                </div>
+            </div>
+            <div class="k6-file-info" id="k6FileInfo">
+                Loading dataset...
+            </div>
+        </div>
+
+        <!-- =========================
+             Human-Readable Analysis & Executive Insights
+             ========================= -->
+        <div class="insight-card">
+            <div class="insight-header">
+                <div class="insight-title-group">
+                    <span class="insight-icon">🧠</span>
+                    <h2 class="insight-title">Executive Performance Summary</h2>
+                </div>
+                <div id="insightBadge" class="insight-status-badge healthy">
+                    <span>●</span> Analyzing...
+                </div>
+            </div>
+
+            <div class="insight-body">
+                <div class="insight-narrative" id="insightNarrative">
+                    <p>Loading performance narrative and executive insights...</p>
+                </div>
+
+                <div class="insight-highlights" id="insightHighlights">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================
+             Top KPI Summary Statistics (6 Interactive Clickable Cards)
+             ========================= -->
+        <section class="stats-grid-6">
+            <div class="k6-stat-card clickable" data-kpi="requests" tabindex="0" role="button" title="Click to view detailed request throughput & volume analytics">
+                <div class="k6-stat-header">
+                    <span class="k6-stat-label">Total Requests</span>
+                    <span class="k6-stat-icon">🌐</span>
+                </div>
+                <div class="k6-stat-value" id="kpiTotalRequests">0</div>
+                <div class="k6-card-progress-wrapper">
+                    <div class="k6-card-progress-bar" id="kpiProgressRequests" style="width: 100%;"></div>
+                </div>
+                <div class="k6-stat-subtext">
+                    Throughput: <span class="highlight" id="kpiRps">0 req/s</span>
+                </div>
+                <span class="card-expand-hint">View details ↗</span>
+            </div>
+
+            <div class="k6-stat-card clickable" data-kpi="failures" tabindex="0" role="button" title="Click to view error breakdown, root causes & status codes">
+                <div class="k6-stat-header">
+                    <span class="k6-stat-label">HTTP Failure Rate</span>
+                    <span class="k6-stat-icon">⚠️</span>
+                </div>
+                <div class="k6-stat-value" id="kpiFailRate">0.00%</div>
+                <div class="k6-card-progress-wrapper failure-gauge">
+                    <div class="k6-card-progress-bar danger" id="kpiProgressFail" style="width: 0%;"></div>
+                </div>
+                <div class="k6-stat-subtext">
+                    <span class="warn" id="kpiFailCount">0 failed reqs</span>
+                </div>
+                <span class="card-expand-hint">View details ↗</span>
+            </div>
+
+            <div class="k6-stat-card clickable" data-kpi="latency" tabindex="0" role="button" title="Click to inspect response time distribution & percentiles (p50, p90, p95, p99)">
+                <div class="k6-stat-header">
+                    <span class="k6-stat-label">Median Latency</span>
+                    <span class="k6-stat-icon">⚡</span>
+                </div>
+                <div class="k6-stat-value" id="kpiMedianDuration">0 ms</div>
+                <div class="k6-card-progress-wrapper">
+                    <div class="k6-card-progress-bar warning" id="kpiProgressLatency" style="width: 65%;"></div>
+                </div>
+                <div class="k6-stat-subtext" id="kpiP95Duration">
+                    p95: 0 ms • avg: 0 ms
+                </div>
+                <span class="card-expand-hint">View details ↗</span>
+            </div>
+
+            <div class="k6-stat-card clickable" data-kpi="concurrency" tabindex="0" role="button" title="Click to view virtual user concurrency ramp-up & iteration metrics">
+                <div class="k6-stat-header">
+                    <span class="k6-stat-label">Peak Concurrency</span>
+                    <span class="k6-stat-icon">👥</span>
+                </div>
+                <div class="k6-stat-value" id="kpiPeakVus">0 VUs</div>
+                <div class="k6-card-progress-wrapper">
+                    <div class="k6-card-progress-bar cyan" id="kpiProgressVus" style="width: 100%;"></div>
+                </div>
+                <div class="k6-stat-subtext">
+                    Executed: <span class="highlight" id="kpiIterations">0 iterations</span>
+                </div>
+                <span class="card-expand-hint">View details ↗</span>
+            </div>
+
+            <div class="k6-stat-card clickable" data-kpi="data" tabindex="0" role="button" title="Click to view network bandwidth, payload sizes & I/O transfer breakdown">
+                <div class="k6-stat-header">
+                    <span class="k6-stat-label">Data Transferred</span>
+                    <span class="k6-stat-icon">📦</span>
+                </div>
+                <div class="k6-stat-value" id="kpiDataTransferred">0 GB</div>
+                <div class="k6-card-progress-wrapper">
+                    <div class="k6-card-progress-bar purple" id="kpiProgressData" style="width: 85%;"></div>
+                </div>
+                <div class="k6-stat-subtext">
+                    Bandwidth: <span class="highlight" id="kpiDataRate">0 MB/s</span>
+                </div>
+                <span class="card-expand-hint">View details ↗</span>
+            </div>
+
+            <div class="k6-stat-card clickable" data-kpi="checks" tabindex="0" role="button" title="Click to inspect all endpoint validation checks & assertion results">
+                <div class="k6-stat-header">
+                    <span class="k6-stat-label">Checks Passed</span>
+                    <span class="k6-stat-icon">🎯</span>
+                </div>
+                <div class="k6-stat-value" id="kpiChecksPassRate">0%</div>
+                <div class="k6-card-progress-wrapper">
+                    <div class="k6-card-progress-bar green" id="kpiProgressChecks" style="width: 0%;"></div>
+                </div>
+                <div class="k6-stat-subtext">
+                    <span class="success" id="kpiChecksCounts">0 passed</span>
+                </div>
+                <span class="card-expand-hint">View details ↗</span>
+            </div>
+        </section>
+
+        <!-- =========================
+             Thresholds & SLA Status
+             ========================= -->
+        <section class="thresholds-container">
+            <div class="thresholds-header">
+                <div>
+                    <h3><span>🎯</span> Performance Thresholds &amp; SLA Compliance</h3>
+                    <p style="margin: 0.25rem 0 0 0; font-size: 0.82rem; color: var(--text-muted);">
+                        Defined service level objectives (SLOs) and pass/fail budget compliance.
+                    </p>
+                </div>
+                <div id="thresholdsSummaryBadge" class="threshold-summary-pill">
+                    Evaluating...
+                </div>
+            </div>
+            <div class="thresholds-grid" id="thresholdsGrid">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- =========================
+             Interactive Charts Grid (Row 1: Outcome & Latency)
+             ========================= -->
+        <section class="charts-grid-2">
+            <!-- Chart 1: Request Outcome -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-group">
+                        <h3>Request Outcome &amp; Success Ratio</h3>
+                        <p>Distribution of successful 2xx responses vs HTTP errors/rejections</p>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartOutcome" class="chart-canvas"></canvas>
+                </div>
+                <div class="chart-legend"></div>
+            </div>
+
+            <!-- Chart 2: Latency Percentiles -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-group">
+                        <h3>Response Time Percentiles</h3>
+                        <p>Latency spread (Min, Median, Average, p90, p95, Max) in milliseconds</p>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartLatency" class="chart-canvas"></canvas>
+                </div>
+                <div class="chart-legend"></div>
+            </div>
+        </section>
+
+        <!-- =========================
+             Interactive Charts Grid (Row 2: Timing & Endpoint Checks)
+             ========================= -->
+        <section class="charts-grid-2">
+            <!-- Chart 3: Request Timing Breakdown -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-group">
+                        <h3>HTTP Request Lifecycle Timing</h3>
+                        <p>Average time spent per phase (Connecting, Waiting/TTFB, Receiving)</p>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartTiming" class="chart-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: Endpoint Checks Performance -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-group">
+                        <h3>Endpoint Checks Pass Rate (%)</h3>
+                        <p>Success percentages across key simulated user flows</p>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartChecks" class="chart-canvas"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================
+             Interactive Charts Grid (Row 3: Network I/O & Concurrency Efficiency)
+             ========================= -->
+        <section class="charts-grid-2">
+            <!-- Chart 5: Network Data I/O & Bandwidth -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-group">
+                        <h3>Network Payload &amp; Data Volume Breakdown</h3>
+                        <p>Total data received vs sent and average throughput bandwidth</p>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartNetwork" class="chart-canvas"></canvas>
+                </div>
+                <div class="chart-legend"></div>
+            </div>
+
+            <!-- Chart 6: Concurrency & Iterations Overview -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-group">
+                        <h3>Concurrency &amp; Iteration Performance</h3>
+                        <p>Virtual user capacity, iteration duration and throughput velocity</p>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="chartConcurrency" class="chart-canvas"></canvas>
+                </div>
+                <div class="chart-legend"></div>
+            </div>
+        </section>
+
+        <!-- =========================
+             Endpoint Checks Table Section
+             ========================= -->
+        <section class="checks-section">
+            <div class="checks-toolbar">
+                <div>
+                    <h3 style="margin: 0 0 0.25rem 0; font-size: 1.15rem; color: var(--text-primary);">
+                        Endpoint Checks Breakdown
+                    </h3>
+                    <p style="margin: 0; font-size: 0.82rem; color: var(--text-muted);">
+                        Detailed status, pass/fail counts, and reliability rate per endpoint check. Click any row for deep drilldown.
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                    <div class="checks-filter-group">
+                        <button type="button" class="filter-btn active" data-filter="all">All</button>
+                        <button type="button" class="filter-btn" data-filter="anonymous">Storefront</button>
+                        <button type="button" class="filter-btn" data-filter="customer">Customer</button>
+                        <button type="button" class="filter-btn" data-filter="admin">Admin</button>
+                        <button type="button" class="filter-btn" data-filter="passed">Passed</button>
+                        <button type="button" class="filter-btn" data-filter="failed">Failed / Partial</button>
+                    </div>
+
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="checksSearchInput" class="search-input" placeholder="Search checks (e.g. Products, Cart, Login)...">
+                    </div>
+                    <span id="checksFilterCount" class="checks-count-badge">0 checks</span>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 110px;">Scope</th>
+                        <th>Check Name / Endpoint Flow</th>
+                        <th style="width: 170px;">Pass Rate &amp; Progress</th>
+                        <th>Passes</th>
+                        <th>Fails</th>
+                        <th>Status</th>
+                        <th style="width: 80px; text-align: center;">Details</th>
+                    </tr>
+                    </thead>
+                    <tbody id="checksTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                            Loading checks...
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- =========================
+             Comprehensive Metrics Detail Table
+             ========================= -->
+        <section class="metrics-table-section">
+            <div style="margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <div>
+                    <h3 style="margin: 0 0 0.25rem 0; font-size: 1.15rem; color: var(--text-primary);">
+                        Core HTTP Metric Statistics
+                    </h3>
+                    <p style="margin: 0; font-size: 0.82rem; color: var(--text-muted);">
+                        Raw statistical distributions including averages, medians, spread ranges, and high-percentile values.
+                    </p>
+                </div>
+                <span class="metrics-count-tag">8 Core Timers Measured</span>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Metric Description</th>
+                        <th>Average</th>
+                        <th>Min</th>
+                        <th>Median (p50)</th>
+                        <th>p90</th>
+                        <th>p95</th>
+                        <th>Max</th>
+                        <th style="width: 130px;">Spread Range</th>
+                    </tr>
+                    </thead>
+                    <tbody id="metricsTableBody">
+                    <!-- Populated dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- =========================
+             Raw JSON Data Accordion
+             ========================= -->
+        <div class="raw-json-card">
+            <div class="raw-json-header" id="rawJsonHeader">
+                <h3><span>📜</span> Raw K6 JSON Summary Data</h3>
+                <span class="toggle-arrow" style="color: var(--aurora-violet); font-size: 0.85rem;">▼</span>
+            </div>
+            <div class="raw-json-content" id="rawJsonContent">
+                <pre class="raw-json-pre" id="rawJsonPre">Loading raw JSON...</pre>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- =========================
+     Interactive Popup Modal System
+     ========================= -->
+<div id="k6ModalBackdrop" class="k6-modal-backdrop" aria-hidden="true">
+    <div class="k6-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="k6-modal-header">
+            <div class="k6-modal-title-wrap">
+                <span class="k6-modal-icon" id="modalIcon">📊</span>
+                <div>
+                    <h3 class="k6-modal-title" id="modalTitle">Metric Details</h3>
+                    <p class="k6-modal-subtitle" id="modalSubtitle">Deep dive analysis and diagnostic metrics</p>
+                </div>
+            </div>
+            <div class="k6-modal-actions">
+                <button type="button" class="k6-modal-close" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+            </div>
+        </div>
+
+        <div class="k6-modal-tabs" id="modalTabBar">
+            <button type="button" class="k6-modal-tab active" data-tab="overview">Overview</button>
+            <button type="button" class="k6-modal-tab" data-tab="breakdown">Breakdown &amp; Metrics</button>
+            <button type="button" class="k6-modal-tab" data-tab="recommendations">Diagnostics &amp; Tuning</button>
+        </div>
+
+        <div class="k6-modal-body">
+            <div class="k6-modal-tab-content active" id="modalTabOverview">
+                <!-- Injected via JS -->
+            </div>
+            <div class="k6-modal-tab-content" id="modalTabBreakdown">
+                <!-- Injected via JS -->
+            </div>
+            <div class="k6-modal-tab-content" id="modalTabRecommendations">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <div class="k6-modal-footer">
+            <div class="k6-modal-footer-info" id="modalFooterInfo">
+                K6 Benchmark Result Summary
+            </div>
+            <button type="button" class="button button-secondary" id="modalDismissBtn">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/js/k6-dashboard.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function () {
+        var summaryRaw = /*[[${summaryJson}]]*/ null;
+        if (summaryRaw) {
+            window.initK6Dashboard(summaryRaw);
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

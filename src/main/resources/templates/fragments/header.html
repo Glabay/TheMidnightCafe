@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<body>
+    <header th:fragment="header" class="site-header">
+        <nav class="nav-container">
+            <div class="logo">
+                <a th:href="@{/}">
+                    <img th:src="@{/img/logo.png}" class="logo-img logo-hide">
+                    <span class="logo-text"><span>The Midnight </span><span>Coder</span></span>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="nav-menu">
+                <ul class="nav-links">
+                    <li><a th:href="@{/products}">Products</a></li>
+                </ul>
+                <div class="header-cart-wrap">
+                    <a th:href="@{/products}" class="header-cart-btn" id="headerCartLink" aria-label="Shopping Cart" title="View Cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="header-cart-badge" id="headerCartCount">0</span>
+                    </a>
+                </div>
+                <div class="auth-buttons">
+                    <div th:if="${#authorization.expression('isAuthenticated()')}">
+                        <div class="user-dropdown">
+                            <button class="dropdown-btn">
+                                <span class="user-nickname" sec:authentication="name">Nickname</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-content">
+                                <a th:href="@{/profile}"><i class="fas fa-user"></i> View Profile</a>
+
+<!--                                th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" -->
+                                <a
+                                   th:href="@{/admin}">
+                                    <i class="fas fa-database"></i> Admin Panel</a>
+
+                                <div class="dropdown-divider"></div>
+                                <form th:action="@{/logout}" method="post">
+                                    <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:unless="${#authorization.expression('isAuthenticated()')}">
+                        <a th:href="@{/login}" class="btn btn-outline">Login</a>
+                        <a th:href="@{/register}" class="btn btn-primary">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+</body>
+</html>
