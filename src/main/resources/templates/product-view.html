@@ -122,11 +122,11 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn-add-to-cart" id="addToCartBtn"
-                            th:onclick="'handleAddToCart(\'' + ${#strings.replace(product.name, '\'', '\\\'')} + '\', \'' + ${product.productId} + '\', ' + ${product.price} + ', \'' + ${product.category != null ? product.category.name() : ''} + '\')'">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Add to Cart</span>
-                    </button>
+<!--                    <button type="button" class="btn-add-to-cart" id="addToCartBtn"-->
+<!--                            th:onclick="'handleAddToCart(\'' + ${#strings.replace(product.name, '\'', '\\\'')} + '\', \'' + ${product.productId} + '\', ' + ${product.price} + ', \'' + ${product.category != null ? product.category.name() : ''} + '\')'">-->
+<!--                        <i class="fas fa-shopping-cart"></i>-->
+<!--                        <span>Add to Cart</span>-->
+<!--                    </button>-->
                 </div>
             </div>
 
