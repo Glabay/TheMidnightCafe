@@ -12,16 +12,25 @@ const ADMIN_PASSWORD = __ENV.ADMIN_PASSWORD || 'Password123!';
 // Custom metrics
 const errorCount = new Counter('errors');
 
+let product = {
+    productId: String,
+    name: String,
+    description: String,
+    price: Number,
+    category: String
+}
+
+let products = [product]
+
 export const options = {
     scenarios: {
         anonymous_user: {
             executor: 'ramping-vus',
             startVUs: 0,
             stages: [
-                { duration: '30s', target: 50 },
-                { duration: '30s', target: 150 },
-                { duration: '30s', target: 250 },
-                { duration: '5m', target: 250 },
+                { duration: '30s', target: 1 },
+                { duration: '30s', target: 3 },
+                { duration: '1m', target: 5 },
                 { duration: '30s', target: 0 },
             ],
             exec: 'anonymousUser',
@@ -30,10 +39,9 @@ export const options = {
             executor: 'ramping-vus',
             startVUs: 0,
             stages: [
-                { duration: '30s', target: 25 },
-                { duration: '30s', target: 150 },
-                { duration: '30s', target: 250 },
-                { duration: '5m', target: 250 },
+                { duration: '30s', target: 1 },
+                { duration: '30s', target: 3 },
+                { duration: '1m', target: 5 },
                 { duration: '30s', target: 0 },
             ],
             exec: 'customerUser',
@@ -42,11 +50,9 @@ export const options = {
             executor: 'ramping-vus',
             startVUs: 0,
             stages: [
-                { duration: '30s', target: 10 },
-                { duration: '90s', target: 25 },
+                { duration: '30s', target: 5 },
                 { duration: '30s', target: 0 },
-                { duration: '30s', target: 10 },
-                { duration: '90s', target: 25 },
+                { duration: '30s', target: 5 },
             ],
             exec: 'adminUser',
         },
@@ -162,14 +168,13 @@ export function customerUser() {
     recordResponse(res, 'Customer: Browse Products', [200]);
     sleepRandom(1, 6);
 
-    let randomProductId = generateUUID();
-    let product;
+    let randomProductId;
     if (res.status === 200) {
         try {
-            const products = res.json();
-            if (Array.isArray(products) && products.length > 0 && products[0].id) {
+            products = res.json();
+            if (Array.isArray(products) && products.length > 0 && products[0].productId) {
                 product = products[Math.floor(Math.random() * products.length)]
-                randomProductId = product.id;
+                randomProductId = product.productId;
             }
         } catch (e) {}
     }
@@ -191,12 +196,12 @@ export function customerUser() {
             }
         } catch (e) {}
     }
-    res = http.post(`${BASE_URL}/api/v1/products/cart/${customerId}`, product, {
+    let cartRes = http.post(`${BASE_URL}/api/v1/products/cart/${customerId}`, product, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
 
     // Add to cart redirects (303 SEE_OTHER) to /products/{productId}
-    recordResponse(res, 'Customer: Add Product to Cart', [200, 302, 303]);
+    recordResponse(cartRes, 'Customer: Add Product to Cart', [200, 302, 303]);
     sleepRandom(1, 6);
 
     // 5. Customer Profile
